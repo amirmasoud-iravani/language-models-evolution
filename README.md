@@ -50,18 +50,18 @@ The examples use small artificial vectors so that every calculation can be follo
 
 A language model assigns a probability to a sequence of tokens:
 
-\[
+$$
 P(w_1,w_2,\ldots,w_T)
-\]
+$$
 
 Using the probability chain rule:
 
-\[
+$$
 P(w_1,w_2,\ldots,w_T)
 =
 \prod_{t=1}^{T}
 P(w_t \mid w_1,\ldots,w_{t-1})
-\]
+$$
 
 For the sentence:
 
@@ -69,12 +69,12 @@ For the sentence:
 
 the probability is decomposed as:
 
-\[
+$$
 P(\text{I})
 P(\text{like}\mid\text{I})
 P(\text{Persian}\mid\text{I like})
 P(\text{poetry}\mid\text{I like Persian})
-\]
+$$
 
 The central NLP problem is therefore:
 
@@ -90,46 +90,46 @@ An n-gram model uses only a fixed number of previous tokens.
 
 For a trigram model:
 
-\[
+$$
 P(w_t\mid w_1,\ldots,w_{t-1})
 \approx
 P(w_t\mid w_{t-2},w_{t-1})
-\]
+$$
 
 The probability can be estimated from corpus counts:
 
-\[
+$$
 P(w_t\mid w_{t-2},w_{t-1})
 =
 \frac{C(w_{t-2},w_{t-1},w_t)}
 {C(w_{t-2},w_{t-1})}
-\]
+$$
 
 ## Example
 
 Suppose a corpus contains:
 
-\[
+$$
 C(\text{I like})=40
-\]
+$$
 
 and:
 
-\[
+$$
 C(\text{I like tea})=30
-\]
+$$
 
 Then:
 
-\[
+$$
 P(\text{tea}\mid\text{I like})
 =
 \frac{30}{40}
 =
 0.75
-\]
+$$
 
-So the trigram model assigns probability \(0.75\) to *tea* after *I like*.
+So the trigram model assigns probability $0.75$ to *tea* after *I like*.
 
 ## Main limitations
 
@@ -149,9 +149,9 @@ If an n-gram never appears in the training corpus, its raw count is zero.
 
 For example:
 
-\[
+$$
 C(\text{I enjoy saffron tea})=0
-\]
+$$
 
 does not mean the phrase is impossible. It may simply be absent from the corpus.
 
@@ -172,27 +172,27 @@ A symbolic n-gram model does not naturally understand that *like* and *enjoy* ar
 
 A recurrent neural network processes a sequence one token at a time.
 
-At time step \(t\), it computes:
+At time step $t$, it computes:
 
-\[
+$$
 h_t
 =
 \tanh(W_xx_t+W_hh_{t-1}+b_h)
-\]
+$$
 
 where:
 
-- \(x_t\) is the current token representation;
-- \(h_{t-1}\) is the previous hidden state;
-- \(h_t\) is the new hidden state.
+- $x_t$ is the current token representation;
+- $h_{t-1}$ is the previous hidden state;
+- $h_t$ is the new hidden state.
 
 The next-token distribution is:
 
-\[
+$$
 P(w_{t+1}\mid w_{\leq t})
 =
 \operatorname{softmax}(W_oh_t+b_o)
-\]
+$$
 
 The hidden state is intended to summarize the sequence seen so far.
 
@@ -210,68 +210,68 @@ flowchart LR
 
 Assume a one-dimensional RNN:
 
-\[
+$$
 h_t=\tanh(x_t+0.5h_{t-1})
-\]
+$$
 
 Let:
 
-\[
+$$
 h_0=0
-\]
+$$
 
 and input values:
 
-\[
+$$
 x_1=1,\qquad x_2=0.5
-\]
+$$
 
 Then:
 
-\[
+$$
 h_1=\tanh(1+0.5(0))=\tanh(1)\approx0.762
-\]
+$$
 
 Next:
 
-\[
+$$
 h_2=\tanh(0.5+0.5(0.762))
-\]
+$$
 
-\[
+$$
 h_2=\tanh(0.881)\approx0.707
-\]
+$$
 
-The second state contains information from both \(x_2\) and the previous state.
+The second state contains information from both $x_2$ and the previous state.
 
 ## Why ordinary RNNs struggle with long sequences
 
 During backpropagation, gradients pass through many recurrent transitions:
 
-\[
+$$
 \frac{\partial h_t}{\partial h_{t-k}}
 =
 \prod_{j=t-k+1}^{t}
 \frac{\partial h_j}{\partial h_{j-1}}
-\]
+$$
 
-Suppose each local derivative is approximately \(0.5\). After ten steps:
+Suppose each local derivative is approximately $0.5$. After ten steps:
 
-\[
+$$
 0.5^{10}\approx0.00098
-\]
+$$
 
 The training signal becomes extremely small. This is the **vanishing-gradient problem**.
 
-If the repeated derivative is larger than \(1\), the gradient may instead become extremely large. This is the **exploding-gradient problem**.
+If the repeated derivative is larger than $1$, the gradient may instead become extremely large. This is the **exploding-gradient problem**.
 
 RNNs also remain sequential:
 
-\[
+$$
 h_1\rightarrow h_2\rightarrow h_3\rightarrow\cdots\rightarrow h_n
-\]
+$$
 
-The model cannot compute \(h_{10}\) before computing \(h_1,\ldots,h_9\).
+The model cannot compute $h_{10}$ before computing $h_1,\ldots,h_9$.
 
 ---
 
@@ -281,93 +281,93 @@ LSTM and GRU architectures introduce gates that control the flow of information.
 
 ## 4.1 LSTM
 
-An LSTM has a hidden state \(h_t\) and a cell state \(c_t\).
+An LSTM has a hidden state $h_t$ and a cell state $c_t$.
 
 ### Forget gate
 
-\[
+$$
 f_t
 =
 \sigma(W_f[x_t;h_{t-1}]+b_f)
-\]
+$$
 
 The forget gate decides how much old memory to preserve.
 
 ### Input gate
 
-\[
+$$
 i_t
 =
 \sigma(W_i[x_t;h_{t-1}]+b_i)
-\]
+$$
 
 ### Candidate memory
 
-\[
+$$
 \tilde c_t
 =
 \tanh(W_c[x_t;h_{t-1}]+b_c)
-\]
+$$
 
 ### Cell-state update
 
-\[
+$$
 c_t
 =
 f_t\odot c_{t-1}
 +
 i_t\odot\tilde c_t
-\]
+$$
 
 ### Output gate
 
-\[
+$$
 o_t
 =
 \sigma(W_o[x_t;h_{t-1}]+b_o)
-\]
+$$
 
 ### Hidden state
 
-\[
+$$
 h_t=o_t\odot\tanh(c_t)
-\]
+$$
 
-Here, \(\odot\) means element-wise multiplication.
+Here, $\odot$ means element-wise multiplication.
 
 ## Scalar LSTM example
 
 Suppose:
 
-\[
+$$
 c_{t-1}=0.8
-\]
+$$
 
-\[
+$$
 f_t=0.9,\qquad i_t=0.3,\qquad \tilde c_t=0.5
-\]
+$$
 
 Then:
 
-\[
+$$
 c_t
 =
 0.9(0.8)+0.3(0.5)
-\]
+$$
 
-\[
+$$
 c_t=0.72+0.15=0.87
-\]
+$$
 
 If:
 
-\[
+$$
 o_t=0.7
-\]
+$$
 
 then:
 
-\[
+$$
 h_t
 =
 0.7\tanh(0.87)
@@ -375,7 +375,7 @@ h_t
 0.7(0.701)
 \approx
 0.491
-\]
+$$
 
 The model preserves most of the old memory and adds a smaller amount of new information.
 
@@ -385,61 +385,61 @@ A GRU is a simpler gated recurrent model.
 
 ### Update gate
 
-\[
+$$
 z_t
 =
 \sigma(W_zx_t+U_zh_{t-1}+b_z)
-\]
+$$
 
 ### Reset gate
 
-\[
+$$
 r_t
 =
 \sigma(W_rx_t+U_rh_{t-1}+b_r)
-\]
+$$
 
 ### Candidate state
 
-\[
+$$
 \tilde h_t
 =
 \tanh(W_hx_t+U_h(r_t\odot h_{t-1})+b_h)
-\]
+$$
 
 ### Final state
 
 One common convention is:
 
-\[
+$$
 h_t
 =
 (1-z_t)\odot h_{t-1}
 +
 z_t\odot\tilde h_t
-\]
+$$
 
 ## Scalar GRU example
 
 Suppose:
 
-\[
+$$
 h_{t-1}=0.6,\qquad
 z_t=0.25,\qquad
 \tilde h_t=0.2
-\]
+$$
 
 Then:
 
-\[
+$$
 h_t
 =
 0.75(0.6)+0.25(0.2)
-\]
+$$
 
-\[
+$$
 h_t=0.45+0.05=0.50
-\]
+$$
 
 The result remains mostly based on the old state.
 
@@ -455,9 +455,9 @@ They improved:
 
 They still process tokens sequentially:
 
-\[
+$$
 h_1\rightarrow h_2\rightarrow\cdots\rightarrow h_n
-\]
+$$
 
 Long-distance information still passes through many recurrent steps.
 
@@ -477,29 +477,29 @@ flowchart LR
 
 The encoder reads:
 
-\[
+$$
 x_1,x_2,\ldots,x_n
-\]
+$$
 
 and produces hidden states:
 
-\[
+$$
 h_1,h_2,\ldots,h_n
-\]
+$$
 
 A simple seq2seq model uses only the final state:
 
-\[
+$$
 c=h_n
-\]
+$$
 
 The decoder then generates:
 
-\[
+$$
 s_t=g(y_{t-1},s_{t-1},c)
-\]
+$$
 
-This forces the whole source sentence into one fixed-size vector \(c\).
+This forces the whole source sentence into one fixed-size vector $c$.
 
 ## Why this is a bottleneck
 
@@ -528,69 +528,69 @@ Attention was introduced to avoid relying on only one fixed context vector.
 
 Instead of using:
 
-\[
+$$
 c=h_n
-\]
+$$
 
 the decoder constructs a different context vector for every output step:
 
-\[
+$$
 c_t=\sum_i\alpha_{t,i}h_i
-\]
+$$
 
 The decoder can therefore focus on different source words while generating different target words.
 
 ## 6.1 The general attention procedure
 
-For each source position \(i\):
+For each source position $i$:
 
 1. Compute a relevance score:
 
-\[
+$$
 e_{t,i}=\operatorname{score}(s,h_i)
-\]
+$$
 
 2. Normalize the scores:
 
-\[
+$$
 \alpha_{t,i}
 =
 \frac{\exp(e_{t,i})}
 {\sum_j\exp(e_{t,j})}
-\]
+$$
 
 3. Compute the context vector:
 
-\[
+$$
 c_t
 =
 \sum_i\alpha_{t,i}h_i
-\]
+$$
 
 The weights satisfy:
 
-\[
+$$
 \alpha_{t,i}\geq0
-\]
+$$
 
 and:
 
-\[
+$$
 \sum_i\alpha_{t,i}=1
-\]
+$$
 
 ## 6.2 Bahdanau attention
 
 Bahdanau attention is often called **additive attention**:
 
-\[
+$$
 e_{t,i}
 =
 v_a^\top
 \tanh(W_ss_{t-1}+W_hh_i+b_a)
-\]
+$$
 
-The decoder state and encoder state are projected, added, passed through \(\tanh\), and then reduced to a scalar score.
+The decoder state and encoder state are projected, added, passed through $\tanh$, and then reduced to a scalar score.
 
 ## 6.3 Luong attention
 
@@ -598,23 +598,23 @@ Luong attention proposed several scoring functions.
 
 ### Dot product
 
-\[
+$$
 e_{t,i}=s_t^\top h_i
-\]
+$$
 
 ### General
 
-\[
+$$
 e_{t,i}=s_t^\top W_ah_i
-\]
+$$
 
 ### Concatenation
 
-\[
+$$
 e_{t,i}
 =
 v_a^\top\tanh(W_a[s_t;h_i])
-\]
+$$
 
 Luong also distinguished:
 
@@ -650,11 +650,11 @@ These values are illustrative, but they show the idea:
 
 It removed the single-vector bottleneck:
 
-\[
+$$
 c
 \quad\longrightarrow\quad
 c_1,c_2,\ldots,c_m
-\]
+$$
 
 It also created soft alignments between source and target words.
 
@@ -664,15 +664,15 @@ Bahdanau and Luong models still contained recurrent encoders and recurrent decod
 
 The encoder still followed:
 
-\[
+$$
 h_1\rightarrow h_2\rightarrow\cdots\rightarrow h_n
-\]
+$$
 
 The decoder still followed:
 
-\[
+$$
 s_1\rightarrow s_2\rightarrow\cdots\rightarrow s_m
-\]
+$$
 
 Attention improved information access, but recurrence remained the computational backbone.
 
@@ -737,31 +737,31 @@ Each earlier token has a key describing how it can be matched. If *animal* has a
 
 Given an input matrix:
 
-\[
+$$
 X\in\mathbb{R}^{n\times d_{\text{model}}}
-\]
+$$
 
 the model learns:
 
-\[
+$$
 Q=XW^Q
-\]
+$$
 
-\[
+$$
 K=XW^K
-\]
+$$
 
-\[
+$$
 V=XW^V
-\]
+$$
 
 where:
 
-- \(Q\in\mathbb{R}^{n\times d_k}\);
-- \(K\in\mathbb{R}^{n\times d_k}\);
-- \(V\in\mathbb{R}^{n\times d_v}\).
+- $Q\in\mathbb{R}^{n\times d_k}$;
+- $K\in\mathbb{R}^{n\times d_k}$;
+- $V\in\mathbb{R}^{n\times d_v}$.
 
-The matrices \(W^Q,W^K,W^V\) are learned during training.
+The matrices $W^Q,W^K,W^V$ are learned during training.
 
 ---
 
@@ -769,7 +769,7 @@ The matrices \(W^Q,W^K,W^V\) are learned during training.
 
 The main Transformer attention formula is:
 
-\[
+$$
 \boxed{
 \operatorname{Attention}(Q,K,V)
 =
@@ -778,55 +778,55 @@ The main Transformer attention formula is:
 \frac{QK^\top}{\sqrt{d_k}}
 \right)V
 }
-\]
+$$
 
 Let us unpack it.
 
 ## 9.1 Similarity scores
 
-\[
+$$
 QK^\top
-\]
+$$
 
-produces an \(n\times n\) matrix.
+produces an $n\times n$ matrix.
 
-Entry \((i,j)\) is:
+Entry $(i,j)$ is:
 
-\[
+$$
 q_i^\top k_j
-\]
+$$
 
-This measures how relevant token \(j\) is to token \(i\).
+This measures how relevant token $j$ is to token $i$.
 
 ## 9.2 Scaling
 
 The scores are divided by:
 
-\[
+$$
 \sqrt{d_k}
-\]
+$$
 
 Why?
 
-If query and key components have variance close to \(1\), then:
+If query and key components have variance close to $1$, then:
 
-\[
+$$
 q^\top k
 =
 \sum_{\ell=1}^{d_k}q_\ell k_\ell
-\]
+$$
 
-tends to grow in magnitude as \(d_k\) grows.
+tends to grow in magnitude as $d_k$ grows.
 
-Large scores can make softmax extremely sharp. One position may receive probability close to \(1\), while the rest receive values close to \(0\). That can produce weak gradients.
+Large scores can make softmax extremely sharp. One position may receive probability close to $1$, while the rest receive values close to $0$. That can produce weak gradients.
 
-Dividing by \(\sqrt{d_k}\) keeps the score scale more stable.
+Dividing by $\sqrt{d_k}$ keeps the score scale more stable.
 
 ## 9.3 Softmax
 
 Softmax converts each row into a probability distribution:
 
-\[
+$$
 \alpha_{ij}
 =
 \frac{
@@ -834,23 +834,23 @@ Softmax converts each row into a probability distribution:
 }{
 \sum_m\exp(s_{im})
 }
-\]
+$$
 
 where:
 
-\[
+$$
 s_{ij}
 =
 \frac{q_i^\top k_j}{\sqrt{d_k}}
-\]
+$$
 
 ## 9.4 Weighted value combination
 
 Finally:
 
-\[
+$$
 o_i=\sum_j\alpha_{ij}v_j
-\]
+$$
 
 Each token receives a weighted mixture of value vectors from all tokens.
 
@@ -860,38 +860,38 @@ Each token receives a weighted mixture of value vectors from all tokens.
 
 Use three tokens:
 
-\[
+$$
 [\text{Ali},\text{book},\text{read}]
-\]
+$$
 
 For simplicity, assign artificial two-dimensional vectors:
 
-\[
+$$
 X=
 \begin{bmatrix}
 1&0\\
 0&1\\
 1&1
 \end{bmatrix}
-\]
+$$
 
 Assume:
 
-\[
+$$
 W^Q=W^K=W^V=I
-\]
+$$
 
 Therefore:
 
-\[
+$$
 Q=K=V=X
-\]
+$$
 
 This identity-matrix assumption is only for demonstration. In a real Transformer, the projection matrices are learned.
 
-## Step 1: compute \(QK^\top\)
+## Step 1: compute $QK^\top$
 
-\[
+$$
 QK^\top
 =
 \begin{bmatrix}
@@ -903,9 +903,9 @@ QK^\top
 1&0&1\\
 0&1&1
 \end{bmatrix}
-\]
+$$
 
-\[
+$$
 QK^\top
 =
 \begin{bmatrix}
@@ -913,31 +913,31 @@ QK^\top
 0&1&1\\
 1&1&2
 \end{bmatrix}
-\]
+$$
 
 Interpretation:
 
-- the first token has dot product \(1\) with itself;
-- it has dot product \(0\) with the second token;
-- it has dot product \(1\) with the third token.
+- the first token has dot product $1$ with itself;
+- it has dot product $0$ with the second token;
+- it has dot product $1$ with the third token.
 
-## Step 2: divide by \(\sqrt{d_k}\)
+## Step 2: divide by $\sqrt{d_k}$
 
 Here:
 
-\[
+$$
 d_k=2
-\]
+$$
 
 so:
 
-\[
+$$
 \sqrt{d_k}=\sqrt{2}\approx1.414
-\]
+$$
 
 Therefore:
 
-\[
+$$
 S
 =
 \frac{QK^\top}{\sqrt{2}}
@@ -947,40 +947,40 @@ S
 0&0.707&0.707\\
 0.707&0.707&1.414
 \end{bmatrix}
-\]
+$$
 
 ## Step 3: apply softmax row by row
 
-\[
+$$
 A=\operatorname{softmax}(S)
-\]
+$$
 
 Approximately:
 
-\[
+$$
 A=
 \begin{bmatrix}
 0.401&0.198&0.401\\
 0.198&0.401&0.401\\
 0.248&0.248&0.503
 \end{bmatrix}
-\]
+$$
 
-Each row sums to \(1\).
+Each row sums to $1$.
 
 The first row means that the first token retrieves:
 
-- \(40.1\%\) from token 1;
-- \(19.8\%\) from token 2;
-- \(40.1\%\) from token 3.
+- $40.1\%$ from token 1;
+- $19.8\%$ from token 2;
+- $40.1\%$ from token 3.
 
-## Step 4: multiply by \(V\)
+## Step 4: multiply by $V$
 
-\[
+$$
 O=AV
-\]
+$$
 
-\[
+$$
 O=
 \begin{bmatrix}
 0.401&0.198&0.401\\
@@ -992,11 +992,11 @@ O=
 0&1\\
 1&1
 \end{bmatrix}
-\]
+$$
 
 The result is:
 
-\[
+$$
 O
 \approx
 \begin{bmatrix}
@@ -1004,19 +1004,19 @@ O
 0.599&0.802\\
 0.752&0.752
 \end{bmatrix}
-\]
+$$
 
 The original first-token vector was:
 
-\[
+$$
 [1,0]
-\]
+$$
 
 Its contextualized vector becomes:
 
-\[
+$$
 [0.802,0.599]
-\]
+$$
 
 It now contains information retrieved from the other tokens.
 
@@ -1039,9 +1039,9 @@ Language contains many kinds of relationships:
 
 Multi-head attention computes several attention operations in parallel.
 
-For head \(j\):
+For head $j$:
 
-\[
+$$
 \operatorname{head}_j
 =
 \operatorname{Attention}
@@ -1050,11 +1050,11 @@ XW_j^Q,
 XW_j^K,
 XW_j^V
 )
-\]
+$$
 
 The heads are concatenated:
 
-\[
+$$
 H=
 [
 \operatorname{head}_1;
@@ -1062,39 +1062,39 @@ H=
 \ldots;
 \operatorname{head}_h
 ]
-\]
+$$
 
 Then projected:
 
-\[
+$$
 \operatorname{MultiHead}(X)=HW^O
-\]
+$$
 
 ## Shape example
 
 Suppose:
 
-\[
+$$
 d_{\text{model}}=512
-\]
+$$
 
 and:
 
-\[
+$$
 h=8
-\]
+$$
 
 A common arrangement is:
 
-\[
+$$
 d_k=d_v=64
-\]
+$$
 
 because:
 
-\[
+$$
 8\times64=512
-\]
+$$
 
 Each head works in its own learned subspace.
 
@@ -1119,7 +1119,7 @@ flowchart TD
 
 A simplified encoder layer is:
 
-\[
+$$
 \text{Self-attention}
 \rightarrow
 \text{Add \& Norm}
@@ -1127,29 +1127,29 @@ A simplified encoder layer is:
 \text{Feed-forward}
 \rightarrow
 \text{Add \& Norm}
-\]
+$$
 
 ## 12.1 Token embeddings
 
 Each token ID indexes a learned embedding matrix:
 
-\[
+$$
 E\in\mathbb{R}^{|V|\times d_{\text{model}}}
-\]
+$$
 
-If token \(t_i\) has vocabulary ID \(k\), then:
+If token $t_i$ has vocabulary ID $k$, then:
 
-\[
+$$
 x_i=E_k
-\]
+$$
 
 For example:
 
-\[
+$$
 E_{\text{book}}
 =
 [0.2,-0.1,0.7,0.4]
-\]
+$$
 
 Embeddings represent lexical information, but they do not inherently represent token order.
 
@@ -1162,7 +1162,7 @@ Without positional information, self-attention would treat these token sets simi
 
 The original Transformer adds sinusoidal positional encodings:
 
-\[
+$$
 PE(\text{pos},2i)
 =
 \sin
@@ -1170,9 +1170,9 @@ PE(\text{pos},2i)
 \frac{\text{pos}}
 {10000^{2i/d_{\text{model}}}}
 \right)
-\]
+$$
 
-\[
+$$
 PE(\text{pos},2i+1)
 =
 \cos
@@ -1180,111 +1180,111 @@ PE(\text{pos},2i+1)
 \frac{\text{pos}}
 {10000^{2i/d_{\text{model}}}}
 \right)
-\]
+$$
 
 The input representation is:
 
-\[
+$$
 z_i=x_i+PE(i)
-\]
+$$
 
 ## Small positional example
 
 Let:
 
-\[
+$$
 d_{\text{model}}=4
-\]
+$$
 
 and position:
 
-\[
+$$
 \text{pos}=2
-\]
+$$
 
 Then:
 
-\[
+$$
 PE(2,0)=\sin(2)\approx0.909
-\]
+$$
 
-\[
+$$
 PE(2,1)=\cos(2)\approx-0.416
-\]
+$$
 
 For the next frequency:
 
-\[
+$$
 10000^{2/4}=100
-\]
+$$
 
 Therefore:
 
-\[
+$$
 PE(2,2)=\sin(2/100)\approx0.020
-\]
+$$
 
-\[
+$$
 PE(2,3)=\cos(2/100)\approx1.000
-\]
+$$
 
 So:
 
-\[
+$$
 PE(2)
 \approx
 [0.909,-0.416,0.020,1.000]
-\]
+$$
 
 If the token embedding is:
 
-\[
+$$
 x_i=[0.2,-0.1,0.7,0.4]
-\]
+$$
 
 then:
 
-\[
+$$
 z_i=x_i+PE(i)
-\]
+$$
 
-\[
+$$
 z_i
 \approx
 [1.109,-0.516,0.720,1.400]
-\]
+$$
 
 The model now receives both token identity and positional information.
 
 ## 12.3 Residual connections
 
-For a sublayer \(f(x)\), a residual connection returns:
+For a sublayer $f(x)$, a residual connection returns:
 
-\[
+$$
 x+f(x)
-\]
+$$
 
 For self-attention:
 
-\[
+$$
 z=x+\operatorname{SelfAttention}(x)
-\]
+$$
 
 Example:
 
-\[
+$$
 x=[1,2,3]
-\]
+$$
 
-\[
+$$
 f(x)=[0.5,-0.5,1]
-\]
+$$
 
 Then:
 
-\[
+$$
 x+f(x)=[1.5,1.5,4]
-\]
+$$
 
 Residual connections help:
 
@@ -1296,31 +1296,31 @@ Residual connections help:
 
 For a vector:
 
-\[
+$$
 z=[z_1,z_2,\ldots,z_d]
-\]
+$$
 
 compute:
 
-\[
+$$
 \mu
 =
 \frac{1}{d}
 \sum_{j=1}^{d}z_j
-\]
+$$
 
 and:
 
-\[
+$$
 \sigma^2
 =
 \frac{1}{d}
 \sum_{j=1}^{d}(z_j-\mu)^2
-\]
+$$
 
 Layer normalization is:
 
-\[
+$$
 \operatorname{LN}(z)
 =
 \gamma\odot
@@ -1328,31 +1328,31 @@ Layer normalization is:
 {\sqrt{\sigma^2+\epsilon}}
 +
 \beta
-\]
+$$
 
-where \(\gamma\) and \(\beta\) are learned parameters.
+where $\gamma$ and $\beta$ are learned parameters.
 
 ### Numerical example
 
 Let:
 
-\[
+$$
 z=[1.5,1.5,4]
-\]
+$$
 
 Mean:
 
-\[
+$$
 \mu
 =
 \frac{1.5+1.5+4}{3}
 =
 2.333
-\]
+$$
 
 Variance:
 
-\[
+$$
 \sigma^2
 =
 \frac{
@@ -1361,21 +1361,21 @@ Variance:
 (4-2.333)^2
 }{3}
 \approx1.389
-\]
+$$
 
 Standard deviation:
 
-\[
+$$
 \sigma\approx1.179
-\]
+$$
 
-Ignoring \(\gamma\), \(\beta\), and \(\epsilon\):
+Ignoring $\gamma$, $\beta$, and $\epsilon$:
 
-\[
+$$
 \operatorname{LN}(z)
 \approx
 [-0.707,-0.707,1.414]
-\]
+$$
 
 Layer normalization stabilizes the scale of activations.
 
@@ -1383,11 +1383,11 @@ Layer normalization stabilizes the scale of activations.
 
 After attention, every token independently passes through the same feed-forward network:
 
-\[
+$$
 \operatorname{FFN}(x)
 =
 \operatorname{ReLU}(xW_1+b_1)W_2+b_2
-\]
+$$
 
 The same parameters are applied at every sequence position.
 
@@ -1399,60 +1399,60 @@ The FFN transforms information **inside each token representation**.
 
 Let:
 
-\[
+$$
 x=[1,-2]
-\]
+$$
 
-\[
+$$
 W_1=
 \begin{bmatrix}
 1&0&1\\
 0&1&-1
 \end{bmatrix}
-\]
+$$
 
 Then:
 
-\[
+$$
 xW_1=[1,-2,3]
-\]
+$$
 
 Applying ReLU:
 
-\[
+$$
 \operatorname{ReLU}([1,-2,3])
 =
 [1,0,3]
-\]
+$$
 
 Let:
 
-\[
+$$
 W_2=
 \begin{bmatrix}
 1&0\\
 0&1\\
 1&1
 \end{bmatrix}
-\]
+$$
 
 Then:
 
-\[
+$$
 [1,0,3]W_2=[4,3]
-\]
+$$
 
 The FFN transforms:
 
-\[
+$$
 [1,-2]\rightarrow[4,3]
-\]
+$$
 
 In the original Transformer:
 
-\[
+$$
 512\rightarrow2048\rightarrow512
-\]
+$$
 
 The temporary expansion gives the network more space for nonlinear feature construction.
 
@@ -1460,75 +1460,75 @@ The temporary expansion gives the network more space for nonlinear feature const
 
 Using the original post-normalization arrangement:
 
-\[
+$$
 A=\operatorname{MultiHeadSelfAttention}(X)
-\]
+$$
 
-\[
+$$
 X'=\operatorname{LayerNorm}(X+A)
-\]
+$$
 
-\[
+$$
 F=\operatorname{FFN}(X')
-\]
+$$
 
-\[
+$$
 Y=\operatorname{LayerNorm}(X'+F)
-\]
+$$
 
-The output \(Y\) becomes the input to the next encoder layer.
+The output $Y$ becomes the input to the next encoder layer.
 
 ## Tensor shapes
 
 Suppose:
 
-\[
+$$
 n=4,\qquad
 d_{\text{model}}=8,\qquad
 h=2
-\]
+$$
 
 Then:
 
-\[
+$$
 X:(4,8)
-\]
+$$
 
 Each head may use:
 
-\[
+$$
 d_k=d_v=4
-\]
+$$
 
 For one head:
 
-\[
+$$
 Q,K,V:(4,4)
-\]
+$$
 
 The attention-score matrix is:
 
-\[
+$$
 QK^\top:(4,4)
-\]
+$$
 
 The head output is:
 
-\[
+$$
 (4,4)
-\]
+$$
 
 Two heads are concatenated:
 
-\[
+$$
 (4,4)+(4,4)\rightarrow(4,8)
-\]
+$$
 
 The encoder layer returns:
 
-\[
+$$
 (4,8)
-\]
+$$
 
 ---
 
@@ -1556,15 +1556,15 @@ flowchart TD
 
 Suppose the correct target is:
 
-\[
+$$
 [\text{I},\text{read},\text{the},\text{book},\text{EOS}]
-\]
+$$
 
 The decoder input is:
 
-\[
+$$
 [\text{BOS},\text{I},\text{read},\text{the},\text{book}]
-\]
+$$
 
 The desired predictions are:
 
@@ -1582,48 +1582,48 @@ During training, all target tokens are stored in one tensor. However, a position
 
 A causal mask is added:
 
-\[
+$$
 M=
 \begin{bmatrix}
 0&-\infty&-\infty\\
 0&0&-\infty\\
 0&0&0
 \end{bmatrix}
-\]
+$$
 
 Attention becomes:
 
-\[
+$$
 \operatorname{softmax}
 \left(
 \frac{QK^\top}{\sqrt{d_k}}+M
 \right)V
-\]
+$$
 
 Because:
 
-\[
+$$
 e^{-\infty}=0
-\]
+$$
 
 future positions receive zero attention probability.
 
 For four tokens, the permitted pattern is:
 
-\[
+$$
 \begin{bmatrix}
 1&0&0&0\\
 1&1&0&0\\
 1&1&1&0\\
 1&1&1&1
 \end{bmatrix}
-\]
+$$
 
-This ensures that token \(y_t\) depends only on:
+This ensures that token $y_t$ depends only on:
 
-\[
+$$
 y_1,\ldots,y_{t-1}
-\]
+$$
 
 ## 13.3 Cross-attention
 
@@ -1631,35 +1631,35 @@ The decoder must also use the source sentence.
 
 Let:
 
-\[
+$$
 H_{\text{enc}}
-\]
+$$
 
 be the final encoder output and:
 
-\[
+$$
 H_{\text{dec}}
-\]
+$$
 
 be the decoder representation.
 
 Cross-attention uses:
 
-\[
+$$
 Q=H_{\text{dec}}W^Q
-\]
+$$
 
-\[
+$$
 K=H_{\text{enc}}W^K
-\]
+$$
 
-\[
+$$
 V=H_{\text{enc}}W^V
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \operatorname{CrossAttention}
 =
 \operatorname{Attention}
@@ -1668,7 +1668,7 @@ H_{\text{dec}}W^Q,
 H_{\text{enc}}W^K,
 H_{\text{enc}}W^V
 )
-\]
+$$
 
 The decoder asks questions about the encoded source sentence.
 
@@ -1678,15 +1678,15 @@ This is conceptually related to Bahdanau and Luong attention, but the surroundin
 
 Source:
 
-\[
+$$
 [\text{من},\text{کتاب},\text{را},\text{خواندم}]
-\]
+$$
 
 Target:
 
-\[
+$$
 [\text{I},\text{read},\text{the},\text{book}]
-\]
+$$
 
 ### Encoder
 
@@ -1702,25 +1702,25 @@ For example:
 
 Input:
 
-\[
+$$
 [\text{BOS}]
-\]
+$$
 
 Cross-attention may focus strongly on **من**.
 
 The output distribution assigns a high probability to:
 
-\[
+$$
 \text{I}
-\]
+$$
 
 ### Decoder step 2
 
 Input:
 
-\[
+$$
 [\text{BOS},\text{I}]
-\]
+$$
 
 Masked self-attention processes the generated prefix.
 
@@ -1728,9 +1728,9 @@ Cross-attention may focus strongly on **خواندم**.
 
 The output distribution assigns a high probability to:
 
-\[
+$$
 \text{read}
-\]
+$$
 
 ### Later steps
 
@@ -1738,52 +1738,52 @@ To produce *the book*, the decoder may attend strongly to **کتاب** and **ر�
 
 The decoder combines:
 
-\[
+$$
 \text{target history}
 +
 \text{source information}
-\]
+$$
 
 ## 13.4 Output projection
 
 After the final decoder layer, each position has a vector:
 
-\[
+$$
 h_t\in\mathbb{R}^{d_{\text{model}}}
-\]
+$$
 
 A linear layer maps it to vocabulary logits:
 
-\[
+$$
 z_t=W_{\text{vocab}}h_t+b_{\text{vocab}}
-\]
+$$
 
-If the vocabulary contains \(|V|\) tokens:
+If the vocabulary contains $|V|$ tokens:
 
-\[
+$$
 z_t\in\mathbb{R}^{|V|}
-\]
+$$
 
 Softmax converts the logits into probabilities:
 
-\[
+$$
 P(y_t=j\mid y_{<t},x)
 =
 \frac{\exp(z_{t,j})}
 {\sum_k\exp(z_{t,k})}
-\]
+$$
 
 Example logits:
 
-\[
+$$
 [2,1,0]
-\]
+$$
 
 Softmax gives approximately:
 
-\[
+$$
 [0.665,0.245,0.090]
-\]
+$$
 
 The first candidate token is most likely.
 
@@ -1793,27 +1793,27 @@ The first candidate token is most likely.
 
 For target sequence:
 
-\[
+$$
 y_1,y_2,\ldots,y_T
-\]
+$$
 
 the model factorizes:
 
-\[
+$$
 P(y\mid x)
 =
 \prod_{t=1}^{T}
 P(y_t\mid y_{<t},x)
-\]
+$$
 
 Training minimizes negative log-likelihood:
 
-\[
+$$
 \mathcal{L}
 =
 -\sum_{t=1}^{T}
 \log P(y_t\mid y_{<t},x)
-\]
+$$
 
 This is equivalent to token-level cross-entropy.
 
@@ -1821,27 +1821,27 @@ This is equivalent to token-level cross-entropy.
 
 If the model gives the correct token probability:
 
-\[
+$$
 P(y_t)=0.7
-\]
+$$
 
 then:
 
-\[
+$$
 -\log(0.7)\approx0.357
-\]
+$$
 
 If it gives the correct token probability:
 
-\[
+$$
 P(y_t)=0.01
-\]
+$$
 
 then:
 
-\[
+$$
 -\log(0.01)\approx4.605
-\]
+$$
 
 The model is penalized much more strongly when it gives the correct token a very low probability.
 
@@ -1853,7 +1853,7 @@ The model is penalized much more strongly when it gives the correct token a very
 
 | Model | Context mechanism | Parallel training | Main bottleneck |
 |---|---|---:|---|
-| n-gram | Fixed \(n-1\) history | High | Sparse counts and short context |
+| n-gram | Fixed $n-1$ history | High | Sparse counts and short context |
 | Feed-forward neural LM | Learned embeddings, fixed window | High | Fixed context |
 | RNN | Recurrent hidden state | Low | Long recurrent paths |
 | LSTM/GRU | Gated recurrent memory | Low | Still sequential |
@@ -1862,17 +1862,17 @@ The model is penalized much more strongly when it gives the correct token a very
 
 ## 15.1 Shorter paths between distant tokens
 
-In an RNN, information from token \(1\) may pass through many hidden states before reaching token \(n\):
+In an RNN, information from token $1$ may pass through many hidden states before reaching token $n$:
 
-\[
+$$
 x_1\rightarrow h_1\rightarrow h_2\rightarrow\cdots\rightarrow h_n
-\]
+$$
 
-In self-attention, token \(1\) can interact directly with token \(n\) in one layer:
+In self-attention, token $1$ can interact directly with token $n$ in one layer:
 
-\[
+$$
 x_1\leftrightarrow x_n
-\]
+$$
 
 This makes long-range dependencies easier to represent.
 
@@ -1914,31 +1914,31 @@ Transformers solve several recurrent-model bottlenecks, but they introduce new o
 
 ## 16.1 Quadratic self-attention
 
-For \(n\) tokens, the score matrix has shape:
+For $n$ tokens, the score matrix has shape:
 
-\[
+$$
 n\times n
-\]
+$$
 
 Standard self-attention therefore requires roughly:
 
-\[
+$$
 O(n^2)
-\]
+$$
 
 pairwise scores.
 
 Examples:
 
-\[
+$$
 1{,}000^2=1{,}000{,}000
-\]
+$$
 
 but:
 
-\[
+$$
 100{,}000^2=10^{10}
-\]
+$$
 
 Very long sequences become expensive.
 
@@ -1952,9 +1952,9 @@ Training can process many target positions in parallel because masking prevents 
 
 During ordinary generation, however:
 
-\[
+$$
 y_1\rightarrow y_2\rightarrow y_3\rightarrow\cdots
-\]
+$$
 
 Each new token depends on previous generated tokens.
 
@@ -2112,67 +2112,67 @@ The first token can attend only to itself. The second token can attend to the fi
 
 Given attention scores:
 
-\[
+$$
 [1,3,0]
-\]
+$$
 
 calculate:
 
-\[
+$$
 \operatorname{softmax}([1,3,0])
-\]
+$$
 
 Use:
 
-\[
+$$
 e^1\approx2.718
-\]
+$$
 
-\[
+$$
 e^3\approx20.086
-\]
+$$
 
-\[
+$$
 e^0=1
-\]
+$$
 
 Expected result:
 
-\[
+$$
 [0.114,0.844,0.042]
-\]
+$$
 
 ## Exercise 2: weighted context vector
 
 Given:
 
-\[
+$$
 \alpha=[0.2,0.7,0.1]
-\]
+$$
 
 and:
 
-\[
+$$
 v_1=[1,0]
-\]
+$$
 
-\[
+$$
 v_2=[0,2]
-\]
+$$
 
-\[
+$$
 v_3=[1,1]
-\]
+$$
 
 calculate:
 
-\[
+$$
 c=\sum_i\alpha_iv_i
-\]
+$$
 
 Solution:
 
-\[
+$$
 c
 =
 0.2[1,0]
@@ -2180,11 +2180,11 @@ c
 0.7[0,2]
 +
 0.1[1,1]
-\]
+$$
 
-\[
+$$
 c=[0.3,1.5]
-\]
+$$
 
 ## Exercise 3: attention and Persian word order
 
@@ -2208,32 +2208,32 @@ A trained model does not receive these labels directly. It learns useful interac
 
 ## Exercise 4: causal masking
 
-For a sequence of length \(4\), construct an additive causal mask using:
+For a sequence of length $4$, construct an additive causal mask using:
 
-- \(0\) for visible positions;
-- \(-\infty\) for future positions.
+- $0$ for visible positions;
+- $-\infty$ for future positions.
 
 Solution:
 
-\[
+$$
 \begin{bmatrix}
 0&-\infty&-\infty&-\infty\\
 0&0&-\infty&-\infty\\
 0&0&0&-\infty\\
 0&0&0&0
 \end{bmatrix}
-\]
+$$
 
 ## Exercise 5: compare computational paths
 
-For a dependency between token \(1\) and token \(20\):
+For a dependency between token $1$ and token $20$:
 
 - how many recurrent transitions may separate them in an RNN?
 - how many self-attention interactions are needed in one Transformer layer?
 
 Conceptual answer:
 
-- an RNN may require information to pass through approximately \(19\) recurrent transitions;
+- an RNN may require information to pass through approximately $19$ recurrent transitions;
 - self-attention can connect the two positions directly in one layer.
 
 ## Exercise 6: implement learned projections
@@ -2274,7 +2274,7 @@ Observe that changing the projections changes both:
 
 ## Historical progression
 
-\[
+$$
 \boxed{
 \text{n-grams}
 \rightarrow
@@ -2286,7 +2286,7 @@ Observe that changing the projections changes both:
 \rightarrow
 \text{Transformer}
 }
-\]
+$$
 
 ## Main bottlenecks
 
@@ -2299,7 +2299,7 @@ Observe that changing the projections changes both:
 
 ## The central attention formula
 
-\[
+$$
 \boxed{
 \operatorname{Attention}(Q,K,V)
 =
@@ -2308,7 +2308,7 @@ Observe that changing the projections changes both:
 \frac{QK^\top}{\sqrt{d_k}}
 \right)V
 }
-\]
+$$
 
 ## The central conceptual difference
 
@@ -2318,7 +2318,7 @@ Observe that changing the projections changes both:
 
 ## Encoder summary
 
-\[
+$$
 \boxed{
 \text{Embeddings + positions}
 \rightarrow
@@ -2330,11 +2330,11 @@ Observe that changing the projections changes both:
 \rightarrow
 \text{Add \& Norm}
 }
-\]
+$$
 
 ## Decoder summary
 
-\[
+$$
 \boxed{
 \text{Masked self-attention}
 \rightarrow
@@ -2344,7 +2344,7 @@ Observe that changing the projections changes both:
 \rightarrow
 \text{Vocabulary softmax}
 }
-\]
+$$
 
 ---
 
