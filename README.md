@@ -2360,16 +2360,5 @@ $$
 
 ---
 
-## Suggested repository structure
-
-```text
-attention-transformer-tutorial/
-├── README.md
-├── attention_numpy.py
-├── exercises/
-│   └── exercises.md
-└── images/
-    └── transformer-overview.png
-```
 
 A natural next step is to implement the same attention calculation in PyTorch and then build a minimal single-head Transformer encoder from scratch.
