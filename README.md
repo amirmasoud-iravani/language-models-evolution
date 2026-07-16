@@ -46,7 +46,7 @@ The examples use small artificial vectors so that every calculation can be follo
 
 ---
 
-# 1. The language-modeling problem
+## 1. The language-modeling problem
 
 A language model assigns a probability to a sequence of tokens:
 
@@ -84,7 +84,7 @@ Different generations of language models answer this question differently.
 
 ---
 
-# 2. Statistical n-gram models
+## 2. Statistical n-gram models
 
 An n-gram model uses only a fixed number of previous tokens.
 
@@ -105,7 +105,7 @@ P(w_t\mid w_{t-2},w_{t-1})
 {C(w_{t-2},w_{t-1})}
 $$
 
-## Example
+### Example
 
 Suppose a corpus contains:
 
@@ -131,9 +131,9 @@ $$
 
 So the trigram model assigns probability $0.75$ to *tea* after *I like*.
 
-## Main limitations
+### Main limitations
 
-### 1. Fixed context
+#### 1. Fixed context
 
 A trigram model sees only two previous tokens.
 
@@ -143,7 +143,7 @@ Consider:
 
 To predict *was*, the subject *book* is several tokens away. A trigram model cannot directly use that dependency.
 
-### 2. Data sparsity
+#### 2. Data sparsity
 
 If an n-gram never appears in the training corpus, its raw count is zero.
 
@@ -157,7 +157,7 @@ does not mean the phrase is impossible. It may simply be absent from the corpus.
 
 Smoothing methods reduce this problem, but they do not eliminate the fixed-context limitation.
 
-### 3. Weak semantic sharing
+#### 3. Weak semantic sharing
 
 These sentences are semantically similar:
 
@@ -168,7 +168,7 @@ A symbolic n-gram model does not naturally understand that *like* and *enjoy* ar
 
 ---
 
-# 3. Recurrent neural networks
+## 3. Recurrent neural networks
 
 A recurrent neural network processes a sequence one token at a time.
 
@@ -206,7 +206,7 @@ flowchart LR
     H3 --> O[Next-token prediction]
 ```
 
-## A tiny scalar example
+### A tiny scalar example
 
 Assume a one-dimensional RNN:
 
@@ -244,7 +244,7 @@ $$
 
 The second state contains information from both $x_2$ and the previous state.
 
-## Why ordinary RNNs struggle with long sequences
+### Why ordinary RNNs struggle with long sequences
 
 During backpropagation, gradients pass through many recurrent transitions:
 
@@ -275,15 +275,15 @@ The model cannot compute $h_{10}$ before computing $h_1,\ldots,h_9$.
 
 ---
 
-# 4. LSTM and GRU
+## 4. LSTM and GRU
 
 LSTM and GRU architectures introduce gates that control the flow of information.
 
-## 4.1 LSTM
+### 4.1 LSTM
 
 An LSTM has a hidden state $h_t$ and a cell state $c_t$.
 
-### Forget gate
+#### Forget gate
 
 $$
 f_t
@@ -293,7 +293,7 @@ $$
 
 The forget gate decides how much old memory to preserve.
 
-### Input gate
+#### Input gate
 
 $$
 i_t
@@ -301,7 +301,7 @@ i_t
 \sigma(W_i[x_t;h_{t-1}]+b_i)
 $$
 
-### Candidate memory
+#### Candidate memory
 
 $$
 \tilde c_t
@@ -309,7 +309,7 @@ $$
 \tanh(W_c[x_t;h_{t-1}]+b_c)
 $$
 
-### Cell-state update
+#### Cell-state update
 
 $$
 c_t
@@ -319,7 +319,7 @@ f_t\odot c_{t-1}
 i_t\odot\tilde c_t
 $$
 
-### Output gate
+#### Output gate
 
 $$
 o_t
@@ -327,7 +327,7 @@ o_t
 \sigma(W_o[x_t;h_{t-1}]+b_o)
 $$
 
-### Hidden state
+#### Hidden state
 
 $$
 h_t=o_t\odot\tanh(c_t)
@@ -335,7 +335,7 @@ $$
 
 Here, $\odot$ means element-wise multiplication.
 
-## Scalar LSTM example
+### Scalar LSTM example
 
 Suppose:
 
@@ -379,11 +379,11 @@ $$
 
 The model preserves most of the old memory and adds a smaller amount of new information.
 
-## 4.2 GRU
+### 4.2 GRU
 
 A GRU is a simpler gated recurrent model.
 
-### Update gate
+#### Update gate
 
 $$
 z_t
@@ -391,7 +391,7 @@ z_t
 \sigma(W_zx_t+U_zh_{t-1}+b_z)
 $$
 
-### Reset gate
+#### Reset gate
 
 $$
 r_t
@@ -399,7 +399,7 @@ r_t
 \sigma(W_rx_t+U_rh_{t-1}+b_r)
 $$
 
-### Candidate state
+#### Candidate state
 
 $$
 \tilde h_t
@@ -407,7 +407,7 @@ $$
 \tanh(W_hx_t+U_h(r_t\odot h_{t-1})+b_h)
 $$
 
-### Final state
+#### Final state
 
 One common convention is:
 
@@ -419,7 +419,7 @@ h_t
 z_t\odot\tilde h_t
 $$
 
-## Scalar GRU example
+### Scalar GRU example
 
 Suppose:
 
@@ -443,7 +443,7 @@ $$
 
 The result remains mostly based on the old state.
 
-## What LSTMs and GRUs solved
+### What LSTMs and GRUs solved
 
 They improved:
 
@@ -451,7 +451,7 @@ They improved:
 - long-term memory;
 - control over forgetting and updating.
 
-## What they did not solve
+### What they did not solve
 
 They still process tokens sequentially:
 
@@ -463,7 +463,7 @@ Long-distance information still passes through many recurrent steps.
 
 ---
 
-# 5. The seq2seq bottleneck
+## 5. The seq2seq bottleneck
 
 Early neural machine translation systems used an encoder-decoder architecture.
 
@@ -501,7 +501,7 @@ $$
 
 This forces the whole source sentence into one fixed-size vector $c$.
 
-## Why this is a bottleneck
+### Why this is a bottleneck
 
 Consider translating:
 
@@ -522,7 +522,7 @@ Attention was introduced to avoid relying on only one fixed context vector.
 
 ---
 
-# 6. Bahdanau and Luong attention
+## 6. Bahdanau and Luong attention
 
 > Bahdanau and Luong are not alternatives to “attention.” They are early forms of neural attention used inside recurrent seq2seq models.
 
@@ -540,7 +540,7 @@ $$
 
 The decoder can therefore focus on different source words while generating different target words.
 
-## 6.1 The general attention procedure
+### 6.1 The general attention procedure
 
 For each source position $i$:
 
@@ -579,7 +579,7 @@ $$
 \sum_i\alpha_{t,i}=1
 $$
 
-## 6.2 Bahdanau attention
+### 6.2 Bahdanau attention
 
 Bahdanau attention is often called **additive attention**:
 
@@ -592,23 +592,23 @@ $$
 
 The decoder state and encoder state are projected, added, passed through $\tanh$, and then reduced to a scalar score.
 
-## 6.3 Luong attention
+### 6.3 Luong attention
 
 Luong attention proposed several scoring functions.
 
-### Dot product
+#### Dot product
 
 $$
 e_{t,i}=s_t^\top h_i
 $$
 
-### General
+#### General
 
 $$
 e_{t,i}=s_t^\top W_ah_i
 $$
 
-### Concatenation
+#### Concatenation
 
 $$
 e_{t,i}
@@ -621,7 +621,7 @@ Luong also distinguished:
 - **global attention**, which scores all source positions;
 - **local attention**, which focuses on a smaller predicted window.
 
-## Translation example
+### Translation example
 
 Source:
 
@@ -646,7 +646,7 @@ These values are illustrative, but they show the idea:
 - generating *read* focuses on **خواند**;
 - generating *book* focuses on **کتاب**.
 
-## What recurrent attention improved
+### What recurrent attention improved
 
 It removed the single-vector bottleneck:
 
@@ -658,7 +658,7 @@ $$
 
 It also created soft alignments between source and target words.
 
-## What remained difficult
+### What remained difficult
 
 Bahdanau and Luong models still contained recurrent encoders and recurrent decoders.
 
@@ -678,7 +678,7 @@ Attention improved information access, but recurrence remained the computational
 
 ---
 
-# 7. From recurrent attention to self-attention
+## 7. From recurrent attention to self-attention
 
 Traditional seq2seq attention asks:
 
@@ -717,7 +717,7 @@ In one self-attention layer, every token can directly interact with every other 
 
 ---
 
-# 8. Queries, keys, and values
+## 8. Queries, keys, and values
 
 Attention uses three representations:
 
@@ -765,7 +765,7 @@ The matrices $W^Q,W^K,W^V$ are learned during training.
 
 ---
 
-# 9. Scaled dot-product attention
+## 9. Scaled dot-product attention
 
 The main Transformer attention formula is:
 
@@ -782,7 +782,7 @@ $$
 
 Let us unpack it.
 
-## 9.1 Similarity scores
+### 9.1 Similarity scores
 
 $$
 QK^\top
@@ -798,7 +798,7 @@ $$
 
 This measures how relevant token $j$ is to token $i$.
 
-## 9.2 Scaling
+### 9.2 Scaling
 
 The scores are divided by:
 
@@ -822,7 +822,7 @@ Large scores can make softmax extremely sharp. One position may receive probabil
 
 Dividing by $\sqrt{d_k}$ keeps the score scale more stable.
 
-## 9.3 Softmax
+### 9.3 Softmax
 
 Softmax converts each row into a probability distribution:
 
@@ -844,7 +844,7 @@ s_{ij}
 \frac{q_i^\top k_j}{\sqrt{d_k}}
 $$
 
-## 9.4 Weighted value combination
+### 9.4 Weighted value combination
 
 Finally:
 
@@ -856,7 +856,7 @@ Each token receives a weighted mixture of value vectors from all tokens.
 
 ---
 
-# 10. A complete numerical self-attention example
+## 10. A complete numerical self-attention example
 
 Use three tokens:
 
@@ -889,7 +889,7 @@ $$
 
 This identity-matrix assumption is only for demonstration. In a real Transformer, the projection matrices are learned.
 
-## Step 1: compute $QK^\top$
+### Step 1: Compute QKᵀ
 
 $$
 QK^\top
@@ -921,7 +921,7 @@ Interpretation:
 - it has dot product $0$ with the second token;
 - it has dot product $1$ with the third token.
 
-## Step 2: divide by $\sqrt{d_k}$
+### Step 2: Divide by √dₖ
 
 Here:
 
@@ -949,7 +949,7 @@ S
 \end{bmatrix}
 $$
 
-## Step 3: apply softmax row by row
+### Step 3: Apply softmax row by row
 
 $$
 A=\operatorname{softmax}(S)
@@ -974,7 +974,7 @@ The first row means that the first token retrieves:
 - $19.8\%$ from token 2;
 - $40.1\%$ from token 3.
 
-## Step 4: multiply by $V$
+### Step 4: Multiply by V
 
 $$
 O=AV
@@ -1024,7 +1024,7 @@ It now contains information retrieved from the other tokens.
 
 ---
 
-# 11. Multi-head attention
+## 11. Multi-head attention
 
 A single attention operation produces one pattern of relationships.
 
@@ -1070,7 +1070,7 @@ $$
 \operatorname{MultiHead}(X)=HW^O
 $$
 
-## Shape example
+### Shape example
 
 Suppose:
 
@@ -1102,7 +1102,7 @@ One head may become useful for local syntactic relations, while another may help
 
 ---
 
-# 12. The Transformer encoder
+## 12. The Transformer encoder
 
 The original Transformer encoder contains repeated layers.
 
@@ -1129,7 +1129,7 @@ $$
 \text{Add \& Norm}
 $$
 
-## 12.1 Token embeddings
+### 12.1 Token embeddings
 
 Each token ID indexes a learned embedding matrix:
 
@@ -1153,7 +1153,7 @@ $$
 
 Embeddings represent lexical information, but they do not inherently represent token order.
 
-## 12.2 Positional encoding
+### 12.2 Positional encoding
 
 Without positional information, self-attention would treat these token sets similarly:
 
@@ -1188,7 +1188,7 @@ $$
 z_i=x_i+PE(i)
 $$
 
-## Small positional example
+### Small positional example
 
 Let:
 
@@ -1256,7 +1256,7 @@ $$
 
 The model now receives both token identity and positional information.
 
-## 12.3 Residual connections
+### 12.3 Residual connections
 
 For a sublayer $f(x)$, a residual connection returns:
 
@@ -1292,7 +1292,7 @@ Residual connections help:
 - improve gradient flow;
 - make deep networks easier to train.
 
-## 12.4 Layer normalization
+### 12.4 Layer normalization
 
 For a vector:
 
@@ -1332,7 +1332,7 @@ $$
 
 where $\gamma$ and $\beta$ are learned parameters.
 
-### Numerical example
+#### Numerical example
 
 Let:
 
@@ -1379,7 +1379,7 @@ $$
 
 Layer normalization stabilizes the scale of activations.
 
-## 12.5 Position-wise feed-forward network
+### 12.5 Position-wise feed-forward network
 
 After attention, every token independently passes through the same feed-forward network:
 
@@ -1395,7 +1395,7 @@ Attention mixes information **between tokens**.
 
 The FFN transforms information **inside each token representation**.
 
-## Numerical FFN example
+### Numerical FFN example
 
 Let:
 
@@ -1456,7 +1456,7 @@ $$
 
 The temporary expansion gives the network more space for nonlinear feature construction.
 
-## 12.6 One complete encoder layer
+### 12.6 One complete encoder layer
 
 Using the original post-normalization arrangement:
 
@@ -1478,7 +1478,7 @@ $$
 
 The output $Y$ becomes the input to the next encoder layer.
 
-## Tensor shapes
+### Tensor shapes
 
 Suppose:
 
@@ -1532,7 +1532,7 @@ $$
 
 ---
 
-# 13. The Transformer decoder
+## 13. The Transformer decoder
 
 The decoder contains:
 
@@ -1552,7 +1552,7 @@ flowchart TD
     H --> I[Linear layer + softmax]
 ```
 
-## 13.1 Shifted target input
+### 13.1 Shifted target input
 
 Suppose the correct target is:
 
@@ -1576,7 +1576,7 @@ The desired predictions are:
 | BOS I read the | book |
 | BOS I read the book | EOS |
 
-## 13.2 Masked self-attention
+### 13.2 Masked self-attention
 
 During training, all target tokens are stored in one tensor. However, a position must not see future answers.
 
@@ -1625,7 +1625,7 @@ $$
 y_1,\ldots,y_{t-1}
 $$
 
-## 13.3 Cross-attention
+### 13.3 Cross-attention
 
 The decoder must also use the source sentence.
 
@@ -1674,7 +1674,7 @@ The decoder asks questions about the encoded source sentence.
 
 This is conceptually related to Bahdanau and Luong attention, but the surrounding architecture is no longer recurrent.
 
-## Translation walkthrough
+### Translation walkthrough
 
 Source:
 
@@ -1688,7 +1688,7 @@ $$
 [\text{I},\text{read},\text{the},\text{book}]
 $$
 
-### Encoder
+#### Encoder
 
 The encoder constructs contextual representations for all source tokens.
 
@@ -1698,7 +1698,7 @@ For example:
 - **کتاب** may attend to **را** to model object marking;
 - **من** may attend to the verb to model its grammatical role.
 
-### Decoder step 1
+#### Decoder step 1
 
 Input:
 
@@ -1714,7 +1714,7 @@ $$
 \text{I}
 $$
 
-### Decoder step 2
+#### Decoder step 2
 
 Input:
 
@@ -1732,7 +1732,7 @@ $$
 \text{read}
 $$
 
-### Later steps
+#### Later steps
 
 To produce *the book*, the decoder may attend strongly to **کتاب** and **را**, while also using the already generated English prefix.
 
@@ -1744,7 +1744,7 @@ $$
 \text{source information}
 $$
 
-## 13.4 Output projection
+### 13.4 Output projection
 
 After the final decoder layer, each position has a vector:
 
@@ -1789,7 +1789,7 @@ The first candidate token is most likely.
 
 ---
 
-# 14. Training objective
+## 14. Training objective
 
 For target sequence:
 
@@ -1817,7 +1817,7 @@ $$
 
 This is equivalent to token-level cross-entropy.
 
-## Numerical example
+### Numerical example
 
 If the model gives the correct token probability:
 
@@ -1847,9 +1847,9 @@ The model is penalized much more strongly when it gives the correct token a very
 
 ---
 
-# 15. Why Transformers are strong
+## 15. Why Transformers are strong
 
-## Comparison
+### Comparison
 
 | Model | Context mechanism | Parallel training | Main bottleneck |
 |---|---|---:|---|
@@ -1860,7 +1860,7 @@ The model is penalized much more strongly when it gives the correct token a very
 | RNN + attention | Dynamic decoder context | Partly sequential | Recurrence remains |
 | Transformer | Self-attention and cross-attention | High | Quadratic attention cost |
 
-## 15.1 Shorter paths between distant tokens
+### 15.1 Shorter paths between distant tokens
 
 In an RNN, information from token $1$ may pass through many hidden states before reaching token $n$:
 
@@ -1876,7 +1876,7 @@ $$
 
 This makes long-range dependencies easier to represent.
 
-## 15.2 Parallel computation
+### 15.2 Parallel computation
 
 All encoder tokens can compute queries, keys, and values simultaneously.
 
@@ -1884,17 +1884,17 @@ RNN states inside one layer must be computed sequentially.
 
 This makes Transformer training more suitable for GPUs and TPUs.
 
-## 15.3 Dynamic context for every token
+### 15.3 Dynamic context for every token
 
 Bahdanau and Luong attention gave the decoder dynamic access to encoder states.
 
 Transformer self-attention gives every token dynamic access to every relevant token in the same sequence.
 
-## 15.4 Multiple relation types
+### 15.4 Multiple relation types
 
 Multi-head attention allows several attention patterns to be learned in parallel.
 
-## 15.5 Better scaling
+### 15.5 Better scaling
 
 Transformer architectures scale effectively with:
 
@@ -1908,11 +1908,11 @@ This scaling behavior helped make models such as BERT, T5, GPT, and many multili
 
 ---
 
-# 16. Limitations
+## 16. Limitations
 
 Transformers solve several recurrent-model bottlenecks, but they introduce new ones.
 
-## 16.1 Quadratic self-attention
+### 16.1 Quadratic self-attention
 
 For $n$ tokens, the score matrix has shape:
 
@@ -1942,11 +1942,11 @@ $$
 
 Very long sequences become expensive.
 
-## 16.2 Position must be added explicitly
+### 16.2 Position must be added explicitly
 
 Self-attention has no inherent left-to-right recurrence. Order must be represented with positional encodings, learned position embeddings, relative positions, rotary embeddings, or related methods.
 
-## 16.3 Autoregressive generation remains sequential
+### 16.3 Autoregressive generation remains sequential
 
 Training can process many target positions in parallel because masking prevents leakage.
 
@@ -1958,7 +1958,7 @@ $$
 
 Each new token depends on previous generated tokens.
 
-## 16.4 Data and compute requirements
+### 16.4 Data and compute requirements
 
 Large Transformers often require:
 
@@ -1971,7 +1971,7 @@ For small datasets or very short sequences, simpler architectures can still be u
 
 ---
 
-# 17. NumPy implementation
+## 17. NumPy implementation
 
 The following code reproduces the numerical self-attention example.
 
@@ -2078,7 +2078,7 @@ Contextualized output:
  [0.752 0.752]]
 ```
 
-## Causal-mask example
+### Causal-mask example
 
 ```python
 sequence_length = 3
@@ -2106,9 +2106,9 @@ The first token can attend only to itself. The second token can attend to the fi
 
 ---
 
-# 18. Practice exercises
+## 18. Practice exercises
 
-## Exercise 1: softmax by hand
+### Exercise 1: softmax by hand
 
 Given attention scores:
 
@@ -2142,7 +2142,7 @@ $$
 [0.114,0.844,0.042]
 $$
 
-## Exercise 2: weighted context vector
+### Exercise 2: weighted context vector
 
 Given:
 
@@ -2186,7 +2186,7 @@ $$
 c=[0.3,1.5]
 $$
 
-## Exercise 3: attention and Persian word order
+### Exercise 3: attention and Persian word order
 
 Consider:
 
@@ -2206,7 +2206,7 @@ A possible answer:
 
 A trained model does not receive these labels directly. It learns useful interaction patterns from data and the training objective.
 
-## Exercise 4: causal masking
+### Exercise 4: causal masking
 
 For a sequence of length $4$, construct an additive causal mask using:
 
@@ -2224,7 +2224,7 @@ $$
 \end{bmatrix}
 $$
 
-## Exercise 5: compare computational paths
+### Exercise 5: compare computational paths
 
 For a dependency between token $1$ and token $20$:
 
@@ -2236,7 +2236,7 @@ Conceptual answer:
 - an RNN may require information to pass through approximately $19$ recurrent transitions;
 - self-attention can connect the two positions directly in one layer.
 
-## Exercise 6: implement learned projections
+### Exercise 6: implement learned projections
 
 Replace the identity projections in the NumPy example with small matrices:
 
@@ -2270,9 +2270,9 @@ Observe that changing the projections changes both:
 
 ---
 
-# 19. Key takeaways
+## 19. Key takeaways
 
-## Historical progression
+### Historical progression
 
 $$
 \boxed{
@@ -2288,7 +2288,7 @@ $$
 }
 $$
 
-## Main bottlenecks
+### Main bottlenecks
 
 - **n-grams:** fixed context and sparse counts;
 - **RNNs:** vanishing gradients and sequential computation;
@@ -2297,7 +2297,7 @@ $$
 - **Bahdanau/Luong attention:** dynamic context, but recurrent backbone remains;
 - **Transformer:** direct token-to-token interaction and parallel training.
 
-## The central attention formula
+### The central attention formula
 
 $$
 \boxed{
@@ -2310,13 +2310,13 @@ $$
 }
 $$
 
-## The central conceptual difference
+### The central conceptual difference
 
 > An RNN transports information through a sequence of hidden states.
 
 > A Transformer retrieves information directly through learned token-to-token relationships.
 
-## Encoder summary
+### Encoder summary
 
 $$
 \boxed{
@@ -2332,7 +2332,7 @@ $$
 }
 $$
 
-## Decoder summary
+### Decoder summary
 
 $$
 \boxed{
@@ -2348,7 +2348,7 @@ $$
 
 ---
 
-# 20. References
+## 20. References
 
 - Bengio, Y., Ducharme, R., Vincent, P., & Jauvin, C. (2003). [A Neural Probabilistic Language Model](https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf).
 - Hochreiter, S., & Schmidhuber, J. (1997). [Long Short-Term Memory](https://www.bioinf.jku.at/publications/older/2604.pdf).
@@ -2359,6 +2359,5 @@ $$
 - Vaswani, A., et al. (2017). [Attention Is All You Need](https://arxiv.org/abs/1706.03762).
 
 ---
-
 
 A natural next step is to implement the same attention calculation in PyTorch and then build a minimal single-head Transformer encoder from scratch.
