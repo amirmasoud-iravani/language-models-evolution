@@ -357,6 +357,8 @@ They still process tokens sequentially:
 h_1 \rightarrow h_2 \rightarrow \cdots \rightarrow h_n
 ```
 
-Long-distance information still passes through many recurrent steps.
+Long-distance information still passes through many recurrent steps. 
+Furthermore, information between distant tokens must still travel through many recurrent steps. 
+This sequential bottleneck became one of the main motivations for developing different attention mechanisms...
 
 ---
