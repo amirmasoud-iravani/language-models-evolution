@@ -130,7 +130,9 @@ where:
 The next-token distribution is:
 
 ```math
-P(w_{t+1} \mid w_{\leq t}) = \operatorname{softmax}\left(W_o h_t + b_o\right)
+P(w_{t+1} \mid w_{\leq t})
+=
+\mathrm{softmax}\left(W_o h_t + b_o\right)
 ```
 
 The hidden state is intended to summarize the sequence seen so far.
