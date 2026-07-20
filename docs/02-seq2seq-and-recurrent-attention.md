@@ -18,27 +18,27 @@ flowchart LR
 
 The encoder reads:
 
-$$
-x_1,x_2,\ldots,x_n
-$$
+```math
+x_1, x_2, \ldots, x_n
+```
 
 and produces hidden states:
 
-$$
-h_1,h_2,\ldots,h_n
-$$
+```math
+h_1, h_2, \ldots, h_n
+```
 
 A simple seq2seq model uses only the final state:
 
-$$
-c=h_n
-$$
+```math
+c = h_n
+```
 
 The decoder then generates:
 
-$$
-s_t=g(y_{t-1},s_{t-1},c)
-$$
+```math
+s_t = g\left(y_{t-1}, s_{t-1}, c\right)
+```
 
 This forces the whole source sentence into one fixed-size vector $c$.
 
@@ -63,75 +63,71 @@ Attention was introduced to avoid relying on only one fixed context vector.
 
 ---
 
----
-
 ## 6. Bahdanau and Luong attention
 
 > Bahdanau and Luong are not alternatives to “attention.” They are early forms of neural attention used inside recurrent seq2seq models.
 
 Instead of using:
 
-$$
-c=h_n
-$$
+```math
+c = h_n
+```
 
 the decoder constructs a different context vector for every output step:
 
-$$
-c_t=\sum_i\alpha_{t,i}h_i
-$$
+```math
+c_t = \sum_{i=1}^{n} \alpha_{t,i} h_i
+```
 
 The decoder can therefore focus on different source words while generating different target words.
 
 ### 6.1 The general attention procedure
 
-For each source position $i$:
+For each source position $i$, the model performs three steps.
 
-1. Compute a relevance score:
+**1. Compute a relevance score**
 
-$$
-e_{t,i}=\mathrm{score}(s,h_i)
-$$
+```math
+e_{t,i} = \mathrm{score}\left(s_{t-1}, h_i\right)
+```
 
-2. Normalize the scores:
+**2. Normalize the scores**
 
-$$
+```math
 \alpha_{t,i}
 =
-\frac{\exp(e_{t,i})}
-{\sum_j\exp(e_{t,j})}
-$$
+\frac{\exp\left(e_{t,i}\right)}
+{\sum_{j=1}^{n} \exp\left(e_{t,j}\right)}
+```
 
-3. Compute the context vector:
+**3. Compute the context vector**
 
-$$
-c_t
-=
-\sum_i\alpha_{t,i}h_i
-$$
+```math
+c_t = \sum_{i=1}^{n} \alpha_{t,i} h_i
+```
 
 The weights satisfy:
 
-$$
-\alpha_{t,i}\geq0
-$$
+```math
+\alpha_{t,i} \ge 0
+```
 
 and:
 
-$$
-\sum_i\alpha_{t,i}=1
-$$
+```math
+\sum_{i=1}^{n} \alpha_{t,i} = 1
+```
 
 ### 6.2 Bahdanau attention
 
 Bahdanau attention is often called **additive attention**:
 
-$$
+```math
 e_{t,i}
 =
-v_a^\top
-\tanh(W_ss_{t-1}+W_hh_i+b_a)
-$$
+v_a^{\top}
+\tanh\left(W_s s_{t-1} + W_h h_i + b_a\right)
+```
 
 The decoder state and encoder state are projected, added, passed through $\tanh$, and then reduced to a scalar score.
 
@@ -141,23 +137,24 @@ Luong attention proposed several scoring functions.
 
 #### Dot product
 
-$$
-e_{t,i}=s_t^\top h_i
-$$
+```math
+e_{t,i} = s_t^{\top} h_i
+```
 
 #### General
 
-$$
-e_{t,i}=s_t^\top W_ah_i
-$$
+```math
+e_{t,i} = s_t^{\top} W_a h_i
+```
 
 #### Concatenation
 
-$$
+```math
 e_{t,i}
 =
-v_a^\top\tanh(W_a[s_t;h_i])
-$$
+v_a^{\top}
+\tanh\left(W_a [s_t; h_i]\right)
+```
 
 Luong also distinguished:
 
@@ -193,11 +190,11 @@ These values are illustrative, but they show the idea:
 
 It removed the single-vector bottleneck:
 
-$$
+```math
 c
-\quad\longrightarrow\quad
-c_1,c_2,\ldots,c_m
-$$
+\quad \longrightarrow \quad
+c_1, c_2, \ldots, c_m
+```
 
 It also created soft alignments between source and target words.
 
@@ -207,15 +204,15 @@ Bahdanau and Luong models still contained recurrent encoders and recurrent decod
 
 The encoder still followed:
 
-$$
-h_1\rightarrow h_2\rightarrow\cdots\rightarrow h_n
-$$
+```math
+h_1 \rightarrow h_2 \rightarrow \cdots \rightarrow h_n
+```
 
 The decoder still followed:
 
-$$
-s_1\rightarrow s_2\rightarrow\cdots\rightarrow s_m
-$$
+```math
+s_1 \rightarrow s_2 \rightarrow \cdots \rightarrow s_m
+```
 
 Attention improved information access, but recurrence remained the computational backbone.
 
