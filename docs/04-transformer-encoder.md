@@ -67,7 +67,7 @@ Without positional information, self-attention would treat these token sets simi
 The original Transformer adds sinusoidal positional encodings:
 
 ```math
-\operatorname{PE}(\mathrm{pos}, 2i)
+\mathrm{PE}(\mathrm{pos}, 2i)
 =
 \sin\left(
 \frac{\mathrm{pos}}
@@ -76,7 +76,7 @@ The original Transformer adds sinusoidal positional encodings:
 ```
 
 ```math
-\operatorname{PE}(\mathrm{pos}, 2i+1)
+\mathrm{PE}(\mathrm{pos}, 2i+1)
 =
 \cos\left(
 \frac{\mathrm{pos}}
@@ -87,7 +87,7 @@ The original Transformer adds sinusoidal positional encodings:
 The input representation is:
 
 ```math
-z_i = x_i + \operatorname{PE}(i)
+z_i = x_i + \mathrm{PE}(i)
 ```
 
 ### Small positional example
@@ -107,11 +107,11 @@ and position:
 Then:
 
 ```math
-\operatorname{PE}(2,0) = \sin(2) \approx 0.909
+\mathrm{PE}(2,0) = \sin(2) \approx 0.909
 ```
 
 ```math
-\operatorname{PE}(2,1) = \cos(2) \approx -0.416
+\mathrm{PE}(2,1) = \cos(2) \approx -0.416
 ```
 
 For the next frequency:
@@ -123,17 +123,17 @@ For the next frequency:
 Therefore:
 
 ```math
-\operatorname{PE}(2,2) = \sin(2/100) \approx 0.020
+\mathrm{PE}(2,2) = \sin(2/100) \approx 0.020
 ```
 
 ```math
-\operatorname{PE}(2,3) = \cos(2/100) \approx 1.000
+\mathrm{PE}(2,3) = \cos(2/100) \approx 1.000
 ```
 
 So:
 
 ```math
-\operatorname{PE}(2)
+\mathrm{PE}(2)
 \approx
 \begin{bmatrix}
 0.909 & -0.416 & 0.020 & 1.000
@@ -152,7 +152,7 @@ x_i =
 then:
 
 ```math
-z_i = x_i + \operatorname{PE}(i)
+z_i = x_i + \mathrm{PE}(i)
 ```
 
 ```math
@@ -176,7 +176,7 @@ x + f(x)
 For self-attention:
 
 ```math
-z = x + \operatorname{SelfAttention}(x)
+z = x + \mathrm{SelfAttention}(x)
 ```
 
 Example:
@@ -242,7 +242,7 @@ and:
 Layer normalization is:
 
 ```math
-\operatorname{LN}(z)
+\mathrm{LN}(z)
 =
 \gamma \odot
 \frac{z-\mu}
@@ -300,7 +300,7 @@ Standard deviation:
 Ignoring $\gamma$, $\beta$, and $\epsilon$:
 
 ```math
-\operatorname{LN}(z)
+\mathrm{LN}(z)
 \approx
 \begin{bmatrix}
 -0.707 & -0.707 & 1.414
@@ -314,9 +314,9 @@ Layer normalization stabilizes the scale of activations.
 After attention, every token independently passes through the same feed-forward network:
 
 ```math
-\operatorname{FFN}(x)
+\mathrm{FFN}(x)
 =
-\operatorname{ReLU}(xW_1+b_1)W_2+b_2
+\mathrm{ReLU}(xW_1+b_1)W_2+b_2
 ```
 
 The same parameters are applied at every sequence position.
@@ -356,7 +356,7 @@ xW_1 =
 Applying ReLU:
 
 ```math
-\operatorname{ReLU}\left(
+\mathrm{ReLU}\left(
 \begin{bmatrix}
 1 & -2 & 3
 \end{bmatrix}
@@ -416,19 +416,19 @@ The temporary expansion gives the network more space for nonlinear feature const
 Using the original post-normalization arrangement:
 
 ```math
-A = \operatorname{MultiHeadSelfAttention}(X)
+A = \mathrm{MultiHeadSelfAttention}(X)
 ```
 
 ```math
-X' = \operatorname{LayerNorm}(X+A)
+X' = \mathrm{LayerNorm}(X+A)
 ```
 
 ```math
-F = \operatorname{FFN}(X')
+F = \mathrm{FFN}(X')
 ```
 
 ```math
-Y = \operatorname{LayerNorm}(X'+F)
+Y = \mathrm{LayerNorm}(X'+F)
 ```
 
 The output $Y$ becomes the input to the next encoder layer.
