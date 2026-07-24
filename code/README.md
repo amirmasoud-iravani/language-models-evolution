@@ -66,12 +66,6 @@ The examples are intentionally small and also run on CPU. For an NVIDIA GPU,
 install the PyTorch build matching your CUDA environment using the official
 PyTorch installation instructions.
 
-## Repository placement
-
-Place this folder beside the markdown chapters. Each notebook names its companion
-chapter at the top. If your markdown files are in a `docs/` directory, you may move
-this folder into `docs/python-practices/` or update the chapter paths in the notebook
-introductions.
 
 ## Teaching design
 
@@ -83,14 +77,6 @@ Each notebook follows the same pattern:
 4. visualize a central operation where useful;
 5. end with modification-based practice prompts.
 
-## Suggested GitHub workflow
-
-- Keep one conceptual change per commit.
-- Open an issue for each extension exercise.
-- Use notebook titles and filenames consistently.
-- Avoid committing large checkpoints or corpora.
-- Add a model card before publishing trained models.
-- Run all notebooks before merging changes.
 
 ## Scope and limitations
 
