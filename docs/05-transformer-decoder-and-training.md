@@ -6,7 +6,7 @@
 
 ## 13. The Transformer decoder
 
-The decoder contains:
+The decoder part contains:
 
 1. masked self-attention;
 2. encoder-decoder cross-attention;
