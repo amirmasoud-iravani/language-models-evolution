@@ -31,7 +31,7 @@ $$
 - **Bahdanau/Luong attention:** dynamic context, but recurrent backbone remains;
 - **Transformer:** direct token-to-token interaction and parallel training.
 
-### The central attention formula
+### The central attention formula 
 
 $$
 \boxed{
