@@ -66,10 +66,12 @@ M=
 Attention becomes:
 
 ```math
+\begin{aligned}
 \mathrm{softmax}
 \left(
 \frac{QK^\top}{\sqrt{d_k}}+M
 \right)V
+\end{aligned}
 ```
 
 Because:
@@ -132,14 +134,14 @@ V=H_{\text{enc}}W^V
 Therefore:
 
 ```math
-\mathrm{CrossAttention}
-=
-\mathrm{Attention}
-(
+\begin{aligned}
+\operatorname{CrossAttention}
+&= \operatorname{Attention}\left(
 H_{\text{dec}}W^Q,
 H_{\text{enc}}W^K,
 H_{\text{enc}}W^V
-)
+\right)
+\end{aligned}
 ```
 
 The decoder asks questions about the encoded source sentence.
@@ -239,10 +241,10 @@ z_t\in\mathbb{R}^{|V|}
 Softmax converts the logits into probabilities:
 
 ```math
-P(y_t=j\mid y_{<t},x)
-=
-\frac{\exp(z_{t,j})}
-{\sum_k\exp(z_{t,k})}
+\begin{aligned}
+P(y_t=j \mid y_{1:t-1},x)
+&= \frac{\exp(z_{t,j})}{\sum_k \exp(z_{t,k})}
+\end{aligned}
 ```
 
 Example logits:
@@ -261,8 +263,6 @@ The first candidate token is most likely.
 
 ---
 
----
-
 ## 14. Training objective
 
 For target sequence:
@@ -274,19 +274,19 @@ y_1,y_2,\ldots,y_T
 the model factorizes:
 
 ```math
-P(y\mid x)
-=
-\prod_{t=1}^{T}
-P(y_t\mid y_{<t},x)
+\begin{aligned}
+P(y \mid x)
+&= \prod_{t=1}^{T} P(y_t \mid y_{1:t-1},x)
+\end{aligned}
 ```
 
 Training minimizes negative log-likelihood:
 
 ```math
+\begin{aligned}
 \mathcal{L}
-=
--\sum_{t=1}^{T}
-\log P(y_t\mid y_{<t},x)
+&= -\sum_{t=1}^{T} \log P(y_t \mid y_{1:t-1},x)
+\end{aligned}
 ```
 
 This is equivalent to token-level cross-entropy.
