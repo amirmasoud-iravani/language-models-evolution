@@ -28,15 +28,15 @@ flowchart TD
 
 Suppose the correct target is:
 
-```text
-[I, read, the, book, EOS]
-```
+$$
+[\text{I},\text{read},\text{the},\text{book},\text{EOS}]
+$$
 
 The decoder input is:
 
-```text
-[BOS, I, read, the, book]
-```
+$$
+[\text{BOS},\text{I},\text{read},\text{the},\text{book}]
+$$
 
 The desired predictions are:
 
@@ -54,44 +54,48 @@ During training, all target tokens are stored in one tensor. However, a position
 
 A causal mask is added:
 
-```text
-M = [
-  [0, -inf, -inf],
-  [0,    0, -inf],
-  [0,    0,    0]
-]
-```
+$$
+M=
+\begin{bmatrix}
+0&-\infty&-\infty\\
+0&0&-\infty\\
+0&0&0
+\end{bmatrix}
+$$
 
 Attention becomes:
 
-```text
-softmax((Q K^T / sqrt(d_k)) + M) V
-```
+$$
+\mathrm{softmax}
+\left(
+\frac{QK^\top}{\sqrt{d_k}}+M
+\right)V
+$$
 
 Because:
 
-```text
-exp(-inf) = 0
-```
+$$
+e^{-\infty}=0
+$$
 
 future positions receive zero attention probability.
 
 For four tokens, the permitted pattern is:
 
-```text
-[
-  [1, 0, 0, 0],
-  [1, 1, 0, 0],
-  [1, 1, 1, 0],
-  [1, 1, 1, 1]
-]
-```
+$$
+\begin{bmatrix}
+1&0&0&0\\
+1&1&0&0\\
+1&1&1&0\\
+1&1&1&1
+\end{bmatrix}
+$$
 
-This ensures that token `y_t` depends only on:
+This ensures that token $y_t$ depends only on:
 
-```text
-y_1, ..., y_(t-1)
-```
+$$
+y_1,\ldots,y_{t-1}
+$$
 
 ### 13.3 Cross-attention
 
@@ -99,42 +103,44 @@ The decoder must also use the source sentence.
 
 Let:
 
-```text
-H_enc
-```
+$$
+H_{\text{enc}}
+$$
 
 be the final encoder output and:
 
-```text
-H_dec
-```
+$$
+H_{\text{dec}}
+$$
 
 be the decoder representation.
 
 Cross-attention uses:
 
-```text
-Q = H_dec W^Q
-```
+$$
+Q=H_{\text{dec}}W^Q
+$$
 
-```text
-K = H_enc W^K
-```
+$$
+K=H_{\text{enc}}W^K
+$$
 
-```text
-V = H_enc W^V
-```
+$$
+V=H_{\text{enc}}W^V
+$$
 
 Therefore:
 
-```text
-CrossAttention =
-Attention(
-    H_dec W^Q,
-    H_enc W^K,
-    H_enc W^V
+$$
+\mathrm{CrossAttention}
+=
+\mathrm{Attention}
+(
+H_{\text{dec}}W^Q,
+H_{\text{enc}}W^K,
+H_{\text{enc}}W^V
 )
-```
+$$
 
 The decoder asks questions about the encoded source sentence.
 
@@ -144,15 +150,15 @@ This is conceptually related to Bahdanau and Luong attention, but the surroundin
 
 Source:
 
-```text
-[من, کتاب, را, خواندم]
-```
+$$
+[\text{من},\text{کتاب},\text{را},\text{خواندم}]
+$$
 
 Target:
 
-```text
-[I, read, the, book]
-```
+$$
+[\text{I},\text{read},\text{the},\text{book}]
+$$
 
 #### Encoder
 
@@ -168,25 +174,25 @@ For example:
 
 Input:
 
-```text
-[BOS]
-```
+$$
+[\text{BOS}]
+$$
 
 Cross-attention may focus strongly on **من**.
 
 The output distribution assigns a high probability to:
 
-```text
-I
-```
+$$
+\text{I}
+$$
 
 #### Decoder step 2
 
 Input:
 
-```text
-[BOS, I]
-```
+$$
+[\text{BOS},\text{I}]
+$$
 
 Masked self-attention processes the generated prefix.
 
@@ -194,9 +200,9 @@ Cross-attention may focus strongly on **خواندم**.
 
 The output distribution assigns a high probability to:
 
-```text
-read
-```
+$$
+\text{read}
+$$
 
 #### Later steps
 
@@ -204,50 +210,52 @@ To produce *the book*, the decoder may attend strongly to **کتاب** and **ر�
 
 The decoder combines:
 
-```text
-target history
+$$
+\text{target history}
 +
-source information
-```
+\text{source information}
+$$
 
 ### 13.4 Output projection
 
 After the final decoder layer, each position has a vector:
 
-```text
-h_t in R^(d_model)
-```
+$$
+h_t\in\mathbb{R}^{d_{\text{model}}}
+$$
 
 A linear layer maps it to vocabulary logits:
 
-```text
-z_t = W_vocab h_t + b_vocab
-```
+$$
+z_t=W_{\text{vocab}}h_t+b_{\text{vocab}}
+$$
 
-If the vocabulary contains `|V|` tokens:
+If the vocabulary contains $|V|$ tokens:
 
-```text
-z_t in R^(|V|)
-```
+$$
+z_t\in\mathbb{R}^{|V|}
+$$
 
 Softmax converts the logits into probabilities:
 
-```text
-P(y_t = j | y_1, ..., y_(t-1), x) =
-    exp(z_(t,j)) / sum_k exp(z_(t,k))
-```
+$$
+P(y_t=j\mid y_{<t},x)
+=
+\frac{\exp(z_{t,j})}
+{\sum_k\exp(z_{t,k})}
+$$
 
 Example logits:
 
-```text
-[2, 1, 0]
-```
+$$
+[2,1,0]
+$$
 
 Softmax gives approximately:
 
-```text
-[0.665, 0.245, 0.090]
-```
+$$
+[0.665,0.245,0.090]
+$$
 
 The first candidate token is most likely.
 
@@ -259,22 +267,27 @@ The first candidate token is most likely.
 
 For target sequence:
 
-```text
-y_1, y_2, ..., y_T
-```
+$$
+y_1,y_2,\ldots,y_T
+$$
 
 the model factorizes:
 
-```text
-P(y | x) =
-    product_(t=1 to T) P(y_t | y_1, ..., y_(t-1), x)
-```
+$$
+P(y\mid x)
+=
+\prod_{t=1}^{T}
+P(y_t\mid y_{<t},x)
+$$
 
 Training minimizes negative log-likelihood:
 
-```text
-L = -sum_(t=1 to T) log P(y_t | y_1, ..., y_(t-1), x)
-```
+$$
+\mathcal{L}
+=
+-\sum_{t=1}^{T}
+\log P(y_t\mid y_{<t},x)
+$$
 
 This is equivalent to token-level cross-entropy.
 
@@ -282,27 +295,27 @@ This is equivalent to token-level cross-entropy.
 
 If the model gives the correct token probability:
 
-```text
-P(y_t) = 0.7
-```
+$$
+P(y_t)=0.7
+$$
 
 then:
 
-```text
--log(0.7) ~= 0.357
-```
+$$
+-\log(0.7)\approx0.357
+$$
 
 If it gives the correct token probability:
 
-```text
-P(y_t) = 0.01
-```
+$$
+P(y_t)=0.01
+$$
 
 then:
 
-```text
--log(0.01) ~= 4.605
-```
+$$
+-\log(0.01)\approx4.605
+$$
 
 The model is penalized much more strongly when it gives the correct token a very low probability.
 
