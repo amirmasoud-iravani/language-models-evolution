@@ -134,14 +134,13 @@ V=H_{\text{enc}}W^V
 Therefore:
 
 ```math
-\begin{aligned}
-\operatorname{CrossAttention}
-&= \operatorname{Attention}\left(
-H_{\text{dec}}W^Q,
-H_{\text{enc}}W^K,
-H_{\text{enc}}W^V
+\mathrm{CrossAttention}
+=
+\mathrm{Attention}\left(
+H_{\mathrm{dec}}W^Q,
+H_{\mathrm{enc}}W^K,
+H_{\mathrm{enc}}W^V
 \right)
-\end{aligned}
 ```
 
 The decoder asks questions about the encoded source sentence.
@@ -150,17 +149,9 @@ This is conceptually related to Bahdanau and Luong attention, but the surroundin
 
 ### Translation walkthrough
 
-Source:
+<p dir="ltr"><strong>Source tokens (in order):</strong> <code>من</code> → <code>کتاب</code> → <code>را</code> → <code>خواندم</code></p>
 
-```math
-[\text{من},\text{کتاب},\text{را},\text{خواندم}]
-```
-
-Target:
-
-```math
-[\text{I},\text{read},\text{the},\text{book}]
-```
+<p dir="ltr"><strong>Target tokens (in order):</strong> <code>I</code> → <code>read</code> → <code>the</code> → <code>book</code></p>
 
 #### Encoder
 
@@ -168,9 +159,9 @@ The encoder constructs contextual representations for all source tokens.
 
 For example:
 
-- **خواندم** may attend to **من** to model the first-person subject;
-- **کتاب** may attend to **را** to model object marking;
-- **من** may attend to the verb to model its grammatical role.
+- The token **خواندم** may attend to **من** to model the first-person subject;
+- The token **کتاب** may attend to **را** to model object marking;
+- The token **من** may attend to the verb to model its grammatical role.
 
 #### Decoder step 1
 
